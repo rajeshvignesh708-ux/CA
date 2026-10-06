@@ -1,0 +1,98 @@
+# ==============================
+# MPI + OpenMP EXPERIMENT
+# ==============================
+
+# 1. Install Python
+sudo apt install python3
+
+# 2. Install MPICH
+sudo apt install -y -qq mpich
+
+# 3. Install pip
+sudo apt install python3-pip
+
+# 4. Install mpi4py
+pip install mpi4py
+
+# 5. Install OpenMPI development library
+sudo apt-get install libopenmpi-dev
+
+# 6. Install OpenMPI binaries
+sudo apt-get install openmpi-bin
+
+# 7. Create MPI program
+gedit mpi_example.py
+
+# 8. Run MPI program
+mpirun -np 2 python3 mpi_example.py
+
+# If "not enough slots" error occurs:
+mpirun --oversubscribe -np 2 python3 mpi_example.py
+
+
+# ==============================
+# OPENMP
+# ==============================
+
+# 9. Install OpenMP
+sudo apt-get install libomp-dev
+
+
+# ---------- SAMPLE 1 ----------
+# Hello World
+
+gedit hello_omp.cpp
+
+g++ -fopenmp hello_omp.cpp -o hello_omp.out
+
+./hello_omp.out
+
+
+# ---------- SAMPLE 2 ----------
+# Loop Parallelism + Reduction
+
+gedit loop_parallel.cpp
+
+g++ -fopenmp loop_parallel.cpp -o loop_parallel.out
+
+./loop_parallel.out
+
+
+# ---------- SAMPLE 3 ----------
+# Private
+
+gedit private.cpp
+
+g++ -fopenmp private.cpp -o private.out
+
+./private.out
+
+
+# ---------- SAMPLE 4 ----------
+# First Private
+
+gedit first_private.cpp
+
+g++ -fopenmp first_private.cpp -o first_private.out
+
+./first_private.out
+
+
+# ---------- SAMPLE 5 ----------
+# Last Private
+
+gedit last_private.cpp
+
+g++ -fopenmp last_private.cpp -o last_private.out
+
+./last_private.out
+
+
+# ---------- SAMPLE 6 ----------
+# Critical Section
+
+gedit critical.cpp
+
+g++ -fopenmp critical.cpp -o critical.out
+
+./critical.out
