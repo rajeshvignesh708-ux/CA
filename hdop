@@ -126,3 +126,173 @@ which spark-shell
 # ------------------------------------------------------------
 
 spark-shell
+
+// -----------------------------------------------------------
+// INSIDE spark-shell
+// -----------------------------------------------------------
+
+println("Apache Spark is running successfully")
+
+:quit
+
+# ------------------------------------------------------------
+# STEP 18: Go to home directory
+# ------------------------------------------------------------
+
+cd ~
+
+
+# ------------------------------------------------------------
+# STEP 19: Remove previous output if it exists
+# This prevents FileAlreadyExistsException
+# ------------------------------------------------------------
+
+rm -rf ~/output
+
+
+# ------------------------------------------------------------
+# STEP 20: Create input.txt
+# ------------------------------------------------------------
+
+cat > ~/input.txt <<'EOF'
+In as name to here them deny wise this. As rapid woody my he me which. Men but they fail shew just wish next put. Led all visitor musical calling nor her. Within coming figure sex things are. Pretended concluded did repulsive education smallness yet yet described. Had countryman his pressed shewing. No gate dare rose he. Eyes year if miss he as upon.
+EOF
+
+
+# ------------------------------------------------------------
+# STEP 21: Verify input.txt exists
+# ------------------------------------------------------------
+
+ls -l ~/input.txt
+
+
+# ------------------------------------------------------------
+# STEP 22: Display input.txt
+# ------------------------------------------------------------
+
+cat ~/input.txt
+
+
+# ------------------------------------------------------------
+# STEP 23: Verify current home directory
+# ------------------------------------------------------------
+
+echo $HOME
+
+
+# ------------------------------------------------------------
+# STEP 24: Run Spark Word Count
+# ------------------------------------------------------------
+
+spark-shell
+
+
+
+
+// -----------------------------------------------------------
+// INSIDE spark-shell
+// -----------------------------------------------------------
+
+// Create Spark RDD
+val inputfile = sc.textFile(System.getProperty("user.home") + "/input.txt")
+
+// Verify input
+inputfile.collect().foreach(println)
+
+// Word Count
+val counts = inputfile
+  .flatMap(line => line.split("\\s+"))
+  .map(word => (word, 1))
+  .reduceByKey(_ + _)
+
+// Display Word Count
+counts.collect().foreach(println)
+
+// Save Word Count output
+counts.saveAsTextFile(System.getProperty("user.home") + "/output")
+
+// Exit Spark Shell
+:quit
+
+
+# ------------------------------------------------------------
+# STEP 25: Check output directory
+# ------------------------------------------------------------
+
+cd ~/output
+
+
+# ------------------------------------------------------------
+# STEP 26: List output files
+# ------------------------------------------------------------
+
+ls -la
+
+
+# ------------------------------------------------------------
+# STEP 27: Display generated Spark output
+# ------------------------------------------------------------
+
+cat part-00000
+
+
+# ------------------------------------------------------------
+# STEP 28: Go back to home directory
+# ------------------------------------------------------------
+
+cd ~
+
+
+# ------------------------------------------------------------
+# STEP 29: Final verification of input
+# ------------------------------------------------------------
+
+echo "================ INPUT FILE ================"
+
+cat ~/input.txt
+
+
+# ------------------------------------------------------------
+# STEP 30: Final verification of output
+# ------------------------------------------------------------
+
+echo "================ WORD COUNT OUTPUT ================"
+
+cat ~/output/part-00000
+
+
+# ------------------------------------------------------------
+# STEP 31: Verify Spark installation
+# ------------------------------------------------------------
+
+which spark-shell
+
+
+# ------------------------------------------------------------
+# STEP 32: Verify Java
+# ------------------------------------------------------------
+
+java -version
+
+
+# ------------------------------------------------------------
+# STEP 33: Verify Scala
+# ------------------------------------------------------------
+
+scala --version
+
+
+# ------------------------------------------------------------
+# STEP 34: Verify Spark directory
+# ------------------------------------------------------------
+
+ls /usr/local/spark
+
+
+# ------------------------------------------------------------
+# STEP 35: Experiment completed
+# ------------------------------------------------------------
+
+echo "===================================================="
+echo "APACHE SPARK WORD COUNT EXPERIMENT COMPLETED"
+echo "===================================================="
