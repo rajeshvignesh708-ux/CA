@@ -1,0 +1,128 @@
+// config.js or process.env configuration
+const API_URL = 'https://api.example.com/v1/resource';
+const API_KEY = process.env.API_KEY;
+
+async function fetchThirdPartyData() {
+  try {
+    const response = await fetch(
+      `${API_URL}?apiKey=${encodeURIComponent(API_KEY)}`
+    );
+
+    // Always validate the network response status
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Failed to retrieve data from API:', error);
+    displayErrorToUser('Could not load data. Please try again later.');
+    return null;
+  }
+}
+
+
+####CURD
+
+const express = require("express");
+
+const app = express();
+const PORT = 3000;
+
+app.use(express.json());
+
+// Temporary data
+let students = [
+    {
+        id: 1,
+        name: "Vignesh",
+        department: "IT"
+    },
+    {
+        id: 2,
+        name: "Vinoth",
+        department: "CSE"
+    }
+];
+
+// CREATE - POST
+app.post("/students", (req, res) => {
+    const student = {
+        id: students.length + 1,
+        name: req.body.name,
+        department: req.body.department
+    };
+
+    students.push(student);
+
+    res.status(201).json({
+        message: "Student created successfully",
+        student: student
+    });
+});
+
+// READ - GET
+app.get("/students", (req, res) => {
+    res.json(students);
+});
+
+// READ ONE - GET
+app.get("/students/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const student = students.find(s => s.id === id);
+
+    if (!student) {
+        return res.status(404).json({
+            message: "Student not found"
+        });
+    }
+
+    res.json(student);
+});
+
+// UPDATE - PUT
+app.put("/students/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const student = students.find(s => s.id === id);
+
+    if (!student) {
+        return res.status(404).json({
+            message: "Student not found"
+        });
+    }
+
+    student.name = req.body.name;
+    student.department = req.body.department;
+
+    res.json({
+        message: "Student updated successfully",
+        student: student
+    });
+});
+
+// DELETE
+app.delete("/students/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const index = students.findIndex(s => s.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({
+            message: "Student not found"
+        });
+    }
+
+    students.splice(index, 1);
+
+    res.json({
+        message: "Student deleted successfully"
+    });
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
