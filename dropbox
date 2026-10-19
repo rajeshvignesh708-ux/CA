@@ -1,0 +1,70 @@
+from flask import Flask, request, render_template_string
+import dropbox
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+
+# Dropbox access token
+TOKEN = "YOUR_NEW_DROPBOX_ACCESS_TOKEN"
+db = dropbox.Dropbox(TOKEN)
+
+PAGE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dropbox Upload</title>
+</head>
+<body style="font-family:Arial;text-align:center;
+background:#eef5ff;padding:50px">
+
+    <h1>Storage as a Service</h1>
+    <h2>Dropbox File Upload System</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <br><br>
+        <button type="submit">Upload to Dropbox</button>
+    </form>
+
+    <p>{{ message }}</p>
+</body>
+</html>
+"""
+
+@app.route("/", methods=["GET", "POST"])
+def upload():
+    message = ""
+
+    if request.method == "POST":
+        file = request.files.get("file")
+
+        if not file or not file.filename:
+            message = "Please select a file."
+        else:
+            filename = secure_filename(file.filename)
+
+            try:
+                db.files_upload(
+                    file.read(),
+                    "/" + filename,
+                    mode=dropbox.files.WriteMode.overwrite
+                )
+                message = "File uploaded successfully to Dropbox!"
+            except Exception:
+                app.logger.exception("Dropbox upload failed")
+                message = "Upload failed. Check CMD for details."
+
+    return render_template_string(PAGE, message=message)
+
+if __name__ == "__main__":
+    app.run(port=5000, debug=False)
+```
+
+
+mkdir dropbox-upload
+cd dropbox-upload
+py -m venv .venv
+.venv\Scripts\activate
+pip install flask dropbox
+notepad app.py
+py app.py
